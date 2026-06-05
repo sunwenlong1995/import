@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Rule {
+  id          String @default(cuid()) @id
+  name        String
+  description String @default("")
+  parseMode   String @default("table")
+  fileConfig  String @default("{}")
+  fieldMappings String @default("[]")
+  tailExtraction String?
+  aggregation String?
+  transpose   String?
+  card        String?
+  text        String?
+  defaults    String?
+  createdAt   String @default("")
+  updatedAt   String @default("")
+}
+
+model Waybill {
+  id              String @default(cuid()) @id
+  externalCode    String @default("")
+  storeName       String @default("")
+  receiverName    String @default("")
+  receiverPhone   String @default("")
+  receiverAddress String @default("")
+  skuCode         String @default("")
+  skuName         String @default("")
+  skuQuantity     Int    @default(0)
+  skuSpec         String @default("")
+  remark          String @default("")
+  batchId         String @default("")
+  submittedAt     String @default("")
+}

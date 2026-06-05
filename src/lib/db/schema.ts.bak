@@ -1,0 +1,36 @@
+import { pgTable, uuid, varchar, text, integer, timestamp, jsonb } from 'drizzle-orm/pg-core';
+
+export const parseRules = pgTable('parse_rules', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description'),
+  config: jsonb('config').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const waybills = pgTable('waybills', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  externalCode: varchar('external_code', { length: 255 }),
+  storeName: varchar('store_name', { length: 255 }),
+  receiverName: varchar('receiver_name', { length: 255 }),
+  receiverPhone: varchar('receiver_phone', { length: 50 }),
+  receiverAddress: text('receiver_address'),
+  skuCode: varchar('sku_code', { length: 255 }).notNull(),
+  skuName: varchar('sku_name', { length: 255 }).notNull(),
+  skuQuantity: integer('sku_quantity').notNull(),
+  skuSpec: varchar('sku_spec', { length: 255 }),
+  remark: text('remark'),
+  batchId: uuid('batch_id').notNull(),
+  submittedAt: timestamp('submitted_at', { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const importBatches = pgTable('import_batches', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  ruleId: uuid('rule_id'),
+  fileName: varchar('file_name', { length: 255 }),
+  totalCount: integer('total_count').default(0).notNull(),
+  successCount: integer('success_count').default(0).notNull(),
+  failedCount: integer('failed_count').default(0).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+});
