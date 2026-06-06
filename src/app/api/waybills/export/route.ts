@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { ids } = body;
 
-    const { waybills: data } = await memoryStore.getWaybills({ pageSize: 10000 });
+    const { waybills: data } = memoryStore.getWaybills({ pageSize: 10000 });
 
     const headers = WAYBILL_FIELDS.map(f => f.label);
     const rows = data.map(record =>

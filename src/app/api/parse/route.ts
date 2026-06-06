@@ -12,8 +12,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Fetch rule from database
-    const rule = await memoryStore.getRule(ruleId);
+    // Fetch rule from memory store
+    const rule = memoryStore.getRule(ruleId);
     if (!rule) {
       return NextResponse.json({ error: 'Rule not found' }, { status: 404 });
     }

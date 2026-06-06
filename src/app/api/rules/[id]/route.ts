@@ -7,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const rule = await memoryStore.getRule(id);
+    const rule = memoryStore.getRule(id);
     if (!rule) {
       return NextResponse.json({ error: 'Rule not found' }, { status: 404 });
     }
@@ -26,12 +26,10 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
     const { rule: updates } = body;
-
-    const updated = await memoryStore.updateRule(id, updates);
+    const updated = memoryStore.updateRule(id, updates);
     if (!updated) {
       return NextResponse.json({ error: 'Rule not found' }, { status: 404 });
     }
-
     return NextResponse.json({ rule: updated });
   } catch (error) {
     console.error('Failed to update rule:', error);
@@ -45,7 +43,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const success = await memoryStore.deleteRule(id);
+    const success = memoryStore.deleteRule(id);
     if (!success) {
       return NextResponse.json({ error: 'Rule not found' }, { status: 404 });
     }

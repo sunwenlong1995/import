@@ -3,7 +3,7 @@ import { memoryStore } from '@/lib/memory-store';
 
 export async function GET() {
   try {
-    const rules = await memoryStore.getRules();
+    const rules = memoryStore.getRules();
     return NextResponse.json({ rules });
   } catch (error) {
     console.error('Failed to fetch rules:', error);
@@ -15,8 +15,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { rule } = body;
-
-    const newRule = await memoryStore.addRule(rule);
+    const newRule = memoryStore.addRule(rule);
     return NextResponse.json({ rule: newRule });
   } catch (error) {
     console.error('Failed to create rule:', error);

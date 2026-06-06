@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     const startDate = searchParams.get('startDate') || '';
     const endDate = searchParams.get('endDate') || '';
 
-    const result = await memoryStore.getWaybills({
+    const result = memoryStore.getWaybills({
       externalCode: externalCode || undefined,
       receiverName: receiverName || undefined,
       startDate: startDate || undefined,
@@ -30,29 +30,32 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { records, batchId, fileName } = body;
+    const { records, batchId } = body;
 
     const waybillData = records.map((r: any) => ({
       id: crypto.randomUUID(),
-      externalCode: r.externalCode || '',
-      storeName: r.storeName || '',
-      receiverName: r.receiverName || '',
-      receiverPhone: r.receiverPhone || '',
-      receiverAddress: r.receiverAddress || '',
-      skuCode: r.skuCode || '',
-      skuName: r.skuName || '',
-      skuQuantity: r.skuQuantity || 0,
-      skuSpec: r.skuSpec || '',
-      remark: r.remark || '',
+      externalCode: r.externalCode || null,
+      storeName: r.storeName || null,
+      receiverName: r.receiverName || null,
+      receiverPhone: r.receiverPhone || null,
+      receiverAddress: r.receiverAddress || null,
+      skuCode: r.skuCode,
+      skuName: r.skuName,
+      skuQuantity: r.skuQuantity,
+      skuSpec: r.skuSpec || null,
+      remark: r.remark || null,
       batchId: batchId,
       submittedAt: new Date().toISOString(),
     }));
 
-    await memoryStore.addWaybills(waybillData);
+    memoryStore.addWaybills(waybillData);
+
+    const successCount = waybillData.length;
+    const failedCount = 0;
 
     return NextResponse.json({
-      success: waybillData.length,
-      failed: 0,
+      success: successCount,
+      failed: failedCount,
       batchId,
     });
   } catch (error) {
