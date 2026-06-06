@@ -132,13 +132,36 @@ export default function ImportPage() {
     showToast('AI 规则已生成，请确认后使用', 'success');
   }, []);
 
-  const handleAIGenerate = useCallback(() => {
+  const handleAIGenerate = useCallback(async () => {
     if (!file) {
       showToast('请先上传文件', 'error');
       return;
     }
+    // Ensure fileContent is ready for AI
+    if (!fileContent) {
+      try {
+        if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+          const XLSX = await import('xlsx');
+          const buffer = await file.arrayBuffer();
+          const workbook = XLSX.read(buffer, { type: 'array' });
+          let text = '';
+          for (const sheetName of workbook.SheetNames) {
+            const ws = workbook.Sheets[sheetName];
+            const data = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', raw: false }) as string[][];
+            text += `--- Sheet: ${sheetName} ---\n`;
+            text += data.slice(0, 50).map(r => r.join('\t')).join('\n') + '\n\n';
+          }
+          setFileContent(text);
+        } else {
+          setFileContent(`[文件内容将在AI分析时由服务端提取] 文件名: ${file.name}`);
+        }
+      } catch (e) {
+        showToast('读取文件内容失败', 'error');
+        return;
+      }
+    }
     setShowAIDialog(true);
-  }, [file]);
+  }, [file, fileContent]);
 
   const stats = records.length > 0 ? {
     total: records.length,
